@@ -107,6 +107,8 @@ services:
     secrets:
       - privkey1.pem
       - fullchain1.pem
+      - elastic_cloud_id
+      - elastic_cloud_auth
     env_file: docker-compose.env
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -167,6 +169,10 @@ secrets:
     file: ${SECRETS_PATH}/kheops_keycloak_password
   welcomebot_token:
     file: ${SECRETS_PATH}/welcomebot_token
+  elastic_cloud_id:
+    file: ${SECRETS_PATH}/elastic_cloud_id
+  elastic_cloud_auth:
+    file: ${SECRETS_PATH}/elastic_cloud_auth
 
 volumes:
   dcm4chee-ldap-ldap:

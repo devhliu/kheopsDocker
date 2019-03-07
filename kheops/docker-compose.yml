@@ -82,6 +82,20 @@ services:
     depends_on:
       - arc
 
+  kheops-ui:
+    container_name: kheopsui
+    image: osirixfoundation/kheops-ui:${KHEOPS_UI_IMAGE_TAG}
+    ports:
+      - "3000:3000"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${TIME_ZONE}:/etc/timezone:ro
+    env_file: docker-compose.env
+    restart: on-failure
+    depends_on:
+      - kheops-authorization
+      - arc
+
   kheops-dicomweb-proxy:
     container_name: kheopsdicomwebproxy
     image: osirixfoundation/kheops-dicomweb-proxy:${KHEOPS_DICOMWEB_PROXY_IMAGE_TAG}
@@ -104,6 +118,8 @@ services:
     secrets:
       - privkey1.pem
       - fullchain1.pem
+      - elastic_cloud_id
+      - elastic_cloud_auth
     env_file: docker-compose.env
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -157,6 +173,11 @@ secrets:
     file: ${SECRETS_PATH}/kheops_keycloak_clientsecret
   kheops_keycloak_password:
     file: ${SECRETS_PATH}/kheops_keycloak_password
+  elastic_cloud_id:
+    file: ${SECRETS_PATH}/elastic_cloud_id
+  elastic_cloud_auth:
+    file: ${SECRETS_PATH}/elastic_cloud_auth
+
 
 volumes:
   dcm4chee-ldap-ldap:

@@ -11,6 +11,8 @@ services:
     secrets:
       - privkey1.pem
       - fullchain1.pem
+      - elastic_cloud_id
+      - elastic_cloud_auth
 
 
 secrets:
@@ -18,3 +20,7 @@ secrets:
     file: secrets/privkey1.pem
   fullchain1.pem:
     file: secrets/fullchain1.pem
+  elastic_cloud_id:
+    file: ${SECRETS_PATH}/elastic_cloud_id
+  elastic_cloud_auth:
+    file: ${SECRETS_PATH}/elastic_cloud_auth

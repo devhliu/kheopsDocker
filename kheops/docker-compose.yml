@@ -95,6 +95,9 @@ services:
     depends_on:
       - kheops-authorization
       - arc
+    secrets:
+      - elastic_cloud_id
+      - elastic_cloud_auth
 
   kheops-dicomweb-proxy:
     container_name: kheopsdicomwebproxy

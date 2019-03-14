@@ -21,6 +21,6 @@ secrets:
   fullchain1.pem:
     file: secrets/fullchain1.pem
   elastic_cloud_id:
-    file: ${SECRETS_PATH}/elastic_cloud_id
+    file: secrets/elastic_cloud_id
   elastic_cloud_auth:
-    file: ${SECRETS_PATH}/elastic_cloud_auth
+    file: secrets/elastic_cloud_auth

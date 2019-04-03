@@ -155,6 +155,9 @@ services:
     secrets:
       - kheops_auth_hmasecret
       - kheops_auth_hmasecret_post
+      - elastic_pwd
+    extra_hosts:
+      - "kibana.kheops.online:10.5.5.31"
 
 secrets:
   kheops_authdb_pass:

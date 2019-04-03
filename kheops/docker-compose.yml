@@ -178,7 +178,7 @@ secrets:
     file: ${SECRETS_PATH}/elastic_cloud_id
   elastic_cloud_auth:
     file: ${SECRETS_PATH}/elastic_cloud_auth
-   elastic_pwd:
+  elastic_pwd:
     file: ${SECRETS_PATH}/elastic_pwd
 
 volumes:

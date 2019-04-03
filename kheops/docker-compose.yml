@@ -140,8 +140,9 @@ services:
     secrets:
       - kheops_auth_hmasecret
       - kheops_auth_hmasecret_post
-      - elastic_cloud_id
-      - elastic_cloud_auth
+      - elastic_pwd
+    extra_hosts:
+      - "kibana.kheops.online:10.5.5.31"
 
   welcomebot:
     container_name: welcomebot

@@ -110,8 +110,7 @@ services:
     secrets:
       - privkey1.pem
       - fullchain1.pem
-      - elastic_cloud_id
-      - elastic_cloud_auth
+      - elastic_pwd
     env_file: docker-compose.env
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -127,6 +126,7 @@ services:
       - welcomebot
     extra_hosts:
       - "${ROOT_URL}:127.0.0.1"
+      - "kibana.kheops.online:10.5.5.31"
 
   pacs-authorization-proxy:
     container_name: pacsauthorizationproxy
@@ -178,6 +178,8 @@ secrets:
     file: ${SECRETS_PATH}/elastic_cloud_id
   elastic_cloud_auth:
     file: ${SECRETS_PATH}/elastic_cloud_auth
+   elastic_pwd:
+    file: ${SECRETS_PATH}/elastic_pwd
 
 volumes:
   dcm4chee-ldap-ldap:

@@ -49,7 +49,7 @@ services:
       - kheops_keycloak_clientsecret
       - kheops_keycloak_password
     extra_hosts:
-      - "keycloak.kheops.online:10.5.5.29"
+      - "login-lavim.unige.ch:10.5.5.29"
 
   kheops-zipper:
     container_name: kheopszipper

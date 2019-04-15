@@ -70,6 +70,7 @@ services:
       - kheops_keycloak_password
     extra_hosts:
       - "keycloak.kheops.online:10.5.5.29"
+      - "kibana.kheops.online:10.5.5.31"
 
   kheops-zipper:
     container_name: kheopszipper

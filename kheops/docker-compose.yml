@@ -110,6 +110,8 @@ services:
       - ${TIME_ZONE}:/etc/timezone:ro
     restart: on-failure
     env_file: docker-compose.env
+    environment:
+      - CATALINA_OPTS="-Duser.timezone=Europe/Zurich"
     ports:
       - "8049:8080"
     depends_on:
@@ -117,6 +119,8 @@ services:
       - arc
     secrets:
       - kheops_auth_hmasecret_post
+    extra_hosts:
+      - "kibana.kheops.online:10.5.5.31"
 
   kheops-reverse-proxy:
     image: osirixfoundation/kheops-reverse-proxy:${KHEOPS_REVERSE_PROXY_IMAGE_TAG}

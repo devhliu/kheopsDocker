@@ -70,6 +70,8 @@ services:
       - kheops_authdb_pass
       - kheops_keycloak_clientsecret
       - kheops_keycloak_password
+      - kheops_client_dicomwebproxysecret
+      - kheops_client_zippersecret
     extra_hosts:
       - "keycloak.kheops.online:10.5.5.29"
       - "kibana.kheops.online:10.5.5.31"
@@ -84,6 +86,8 @@ services:
     env_file: docker-compose.env
     depends_on:
       - arc
+    secrets:
+      - kheops_client_zippersecret
 
   kheops-ui:
     container_name: kheopsui
@@ -119,6 +123,7 @@ services:
       - arc
     secrets:
       - kheops_auth_hmasecret_post
+      - kheops_client_dicomwebproxysecret
     extra_hosts:
       - "kibana.kheops.online:10.5.5.31"
 
@@ -188,6 +193,10 @@ secrets:
     file: ${SECRETS_PATH}/kheops_keycloak_clientsecret
   kheops_keycloak_password:
     file: ${SECRETS_PATH}/kheops_keycloak_password
+  kheops_client_dicomwebproxysecret:
+    file: ${SECRETS_PATH}/kheops_client_dicomwebproxysecret
+  kheops_client_zippersecret:
+    file: ${SECRETS_PATH}/kheops_client_zippersecret
   elastic_cloud_id:
     file: ${SECRETS_PATH}/elastic_cloud_id
   elastic_cloud_auth:

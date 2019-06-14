@@ -64,6 +64,7 @@ services:
       - kheops_client_zippersecret
     extra_hosts:
       - "keycloak.kheops.online:10.5.5.29"
+      - "reportprovider.kheops.online:10.5.5.33"
 
   kheops-zipper:
     container_name: kheopszipper
@@ -114,7 +115,6 @@ services:
     secrets:
       - privkey1.pem
       - fullchain1.pem
-      - elastic_pwd
     env_file: docker-compose.env
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -144,7 +144,6 @@ services:
     secrets:
       - kheops_auth_hmasecret
       - kheops_auth_hmasecret_post
-      - elastic_pwd
     extra_hosts:
       - "kibana.kheops.online:10.5.5.31"
 

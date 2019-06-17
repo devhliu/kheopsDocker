@@ -53,7 +53,7 @@ services:
       - kheops_client_zippersecret
     extra_hosts:
       - "keycloak.kheops.online:10.5.5.29"
-      - "kibana.kheops.online:10.5.5.31"
+      - "kibana.kheops.online:10.5.7.8"
       - "reportprovider.kheops.online:10.5.5.33"
 
   kheops-zipper:
@@ -98,7 +98,7 @@ services:
       - kheops_auth_hmasecret_post
       - kheops_client_dicomwebproxysecret
     extra_hosts:
-      - "kibana.kheops.online:10.5.5.31"
+      - "kibana.kheops.online:10.5.7.8"
 
   kheops-reverse-proxy:
     image: osirixfoundation/kheops-reverse-proxy:${KHEOPS_REVERSE_PROXY_IMAGE_TAG}
@@ -120,7 +120,7 @@ services:
       - pacs-authorization-proxy
     extra_hosts:
       - "${ROOT_URL}:127.0.0.1"
-      - "kibana.kheops.online:10.5.5.31"
+      - "kibana.kheops.online:10.5.7.8"
 
   pacs-authorization-proxy:
     container_name: pacsauthorizationproxy
@@ -135,7 +135,7 @@ services:
       - kheops_auth_hmasecret
       - kheops_auth_hmasecret_post
     extra_hosts:
-      - "kibana.kheops.online:10.5.5.31"
+      - "kibana.kheops.online:10.5.7.8"
 
 secrets:
   kheops_authdb_pass:

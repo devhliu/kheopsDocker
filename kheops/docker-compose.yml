@@ -52,6 +52,8 @@ services:
       - ${TIME_ZONE}:/etc/timezone:ro
     restart: on-failure
     env_file: docker-compose.env
+    environment:
+      - CATALINA_OPTS="-Duser.timezone=UTC"
     depends_on:
       - db
       - arc

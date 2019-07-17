@@ -41,7 +41,7 @@ services:
     restart: on-failure
     env_file: docker-compose.env
     environment:
-      - CATALINA_OPTS="-Duser.timezone=Europe/Zurich"
+      - CATALINA_OPTS="-Duser.timezone=UTC"
     depends_on:
       - arc
     secrets:

@@ -60,7 +60,7 @@ services:
     restart: on-failure
     env_file: docker-compose.env
     environment:
-      - CATALINA_OPTS="-Duser.timezone=Europe/Zurich"
+      - CATALINA_OPTS="-Duser.timezone=UTC"
     depends_on:
       - db
       - arc
@@ -72,6 +72,7 @@ services:
       - kheops_keycloak_password
       - kheops_client_dicomwebproxysecret
       - kheops_client_zippersecret
+      - kheops_metric_ressource_password
     extra_hosts:
       - "keycloak.kheops.online:10.5.5.29"
       - "kibana.kheops.online:10.5.5.31"
@@ -200,6 +201,8 @@ secrets:
     file: ${SECRETS_PATH}/elastic_cloud_auth
   elastic_pwd:
     file: ${SECRETS_PATH}/elastic_pwd 
+  kheops_metric_ressource_password:
+    file: ${SECRETS_PATH}/kheops_metric_ressource_password
 
 volumes:
   dcm4chee-ldap-ldap:

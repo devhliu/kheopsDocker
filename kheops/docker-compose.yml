@@ -51,6 +51,7 @@ services:
       - kheops_keycloak_clientsecret
       - kheops_client_dicomwebproxysecret
       - kheops_client_zippersecret
+      - kheops_metric_ressource_password
     extra_hosts:
       - "keycloak.kheops.online:10.5.5.29"
       - "kibana.kheops.online:10.5.7.8"
@@ -160,6 +161,8 @@ secrets:
     file: ${SECRETS_PATH}/kheops_client_dicomwebproxysecret
   kheops_client_zippersecret:
     file: ${SECRETS_PATH}/kheops_client_zippersecret
+  kheops_metric_ressource_password:
+    file: ${SECRETS_PATH}/kheops_metric_ressource_password
 
 volumes:
   dcm4chee-ldap-ldap:

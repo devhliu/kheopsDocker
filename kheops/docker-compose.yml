@@ -1,7 +1,6 @@
 version: '3.1'
 #https://github.com/docker-library/postgres/issues/151
 services:
-
   ldap:
     container_name: pacsldap
     image: dcm4che/slapd-dcm4chee:${PACS_LDAP_IMAGE_TAG}
@@ -15,22 +14,8 @@ services:
     networks:
       - pacs_network
 
-  db:
-    container_name: db
-    image: osirixfoundation/kheops-database:${KHEOPS_DATABASE_IMAGE_TAG}
-    volumes:
-      - kheops-db-data:/var/lib/postgresql/data
-    env_file: docker-compose.env
-    secrets:
-      - kheops_authdb_pass
-      - kheops_pacsdb_pass
-    restart: on-failure
-    networks:
-      - pacs_network
-      - kheops_network
-
   arc:
-    container_name: pacsarc
+    container_name: kheopspacsarc
     image: osirixfoundation/kheops-dcm4chee-arc-psql:${KHEOPS_ARC_IMAGE_TAG}
     ports:
       - "8080:8080"
@@ -73,11 +58,9 @@ services:
       - db
       - arc
     secrets:
-      - kheops_superuser_hmasecret
       - kheops_auth_hmasecret
       - kheops_authdb_pass
       - kheops_keycloak_clientsecret
-      - kheops_keycloak_password
       - kheops_client_dicomwebproxysecret
       - kheops_client_zippersecret
       - kheops_metric_ressource_password
@@ -117,9 +100,6 @@ services:
     depends_on:
       - kheops-authorization
       - arc
-    secrets:
-      - elastic_cloud_id
-      - elastic_cloud_auth
     networks:
       - frontend_network
 
@@ -200,8 +180,6 @@ secrets:
     file: ${SECRETS_PATH}/kheops_authdb_pass
   kheops_pacsdb_pass:
     file: ${SECRETS_PATH}/kheops_pacsdb_pass
-  kheops_superuser_hmasecret:
-    file: ${SECRETS_PATH}/kheops_superuser_hmasecret
   kheops_auth_hmasecret:
     file: ${SECRETS_PATH}/kheops_auth_hmasecret
   kheops_auth_hmasecret_post:
@@ -214,18 +192,10 @@ secrets:
     file: ${SECRETS_PATH}/OAuth2_secret
   kheops_keycloak_clientsecret:
     file: ${SECRETS_PATH}/kheops_keycloak_clientsecret
-  kheops_keycloak_password:
-    file: ${SECRETS_PATH}/kheops_keycloak_password
   kheops_client_dicomwebproxysecret:
     file: ${SECRETS_PATH}/kheops_client_dicomwebproxysecret
   kheops_client_zippersecret:
     file: ${SECRETS_PATH}/kheops_client_zippersecret
-  elastic_cloud_id:
-    file: ${SECRETS_PATH}/elastic_cloud_id
-  elastic_cloud_auth:
-    file: ${SECRETS_PATH}/elastic_cloud_auth
-  elastic_pwd:
-    file: ${SECRETS_PATH}/elastic_pwd 
   kheops_metric_ressource_password:
     file: ${SECRETS_PATH}/kheops_metric_ressource_password
 
@@ -243,4 +213,3 @@ networks:
     driver: bridge
   frontend_network:
     driver: bridge
-

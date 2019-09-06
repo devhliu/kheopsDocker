@@ -138,6 +138,7 @@ services:
     networks:
       - kheops_network
       - frontend_network
+      - reverseproxy_network
 
   pacs-authorization-proxy:
     container_name: pacsauthorizationproxy
@@ -194,4 +195,6 @@ networks:
   pacs_network:
     driver: bridge
   frontend_network:
+    driver: bridge
+  reverseproxy_network:
     driver: bridge

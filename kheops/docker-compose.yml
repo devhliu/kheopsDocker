@@ -17,13 +17,6 @@ services:
   arc:
     container_name: kheopspacsarc
     image: osirixfoundation/kheops-dcm4chee-arc-psql:${KHEOPS_ARC_IMAGE_TAG}
-    ports:
-      - "8080:8080"
-      - "8443:8443"
-      - "9990:9990"
-      - "8787:8787"
-      - "11112:11112"
-      - "2575:2575"
     env_file: docker-compose.env
     environment:
       WILDFLY_CHOWN: /storage /opt/wildfly/standalone
@@ -88,8 +81,6 @@ services:
   kheops-ui:
     container_name: kheopsui
     image: osirixfoundation/kheops-ui:${KHEOPS_UI_IMAGE_TAG}
-    ports:
-      - "3000:3000"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${TIME_ZONE}:/etc/timezone:ro
@@ -112,8 +103,6 @@ services:
     env_file: docker-compose.env
     environment:
       - CATALINA_OPTS="-Duser.timezone=Europe/Zurich"
-    ports:
-      - "8049:8080"
     depends_on:
       - kheops-authorization
       - arc
@@ -137,10 +126,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ${TIME_ZONE}:/etc/timezone:ro
     ports:
-      - "80:80"
       - "443:443"
-      - "8042:8042"
-      - "8048:8048"
     depends_on:
       - kheops-authorization
       - kheops-dicomweb-proxy
@@ -160,8 +146,6 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${TIME_ZONE}:/etc/timezone:ro
-    ports:
-      - "82:80"
     depends_on:
       - arc
     secrets:

@@ -24,6 +24,7 @@ spec:
     metadata:
       labels:
         app: kheopsreverseproxy
+        k8s-app: kheopsreverseproxy
     spec:
       containers:
       - name: kheopsreverseproxy
@@ -50,13 +51,3 @@ spec:
             path: privkey1.pem
           - key: fullchain1.pem
             path: fullchain1.pem
----
-kind: Ingress
-apiVersion: networking.k8s.io/v1beta1
-metadata:
-  name: kheopsingress
-
-spec:
-  backend:
-    serviceName: kheopsreverseproxy
-    servicePort: 8042

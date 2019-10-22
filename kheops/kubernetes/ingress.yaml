@@ -1,0 +1,37 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-service-web-kheopsreverseproxy
+  namespace: kheops
+spec:
+  podSelector:
+    matchLabels:
+      k8s-app: kheopsreverseproxy
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+           name: kube-system
+      podSelector:
+        matchLabels:
+          name: traefik-ingress-lb
+    ports:
+    - protocol: TCP
+      port: 8042
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kheopsreverseproxy
+  namespace: kheops
+spec:
+  tls:
+  - secretName: k8s-unige-tls
+  rules:
+  - host: k8s-unige.kheops.online
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kheopsreverseproxy
+          servicePort: 8042

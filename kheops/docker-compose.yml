@@ -29,8 +29,8 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${TIME_ZONE}:/etc/timezone:ro
-      - dcm4chee-arc-wildfly:/opt/wildfly/standalone
-      - /dcm4chee-arc/storage:/storage
+      - /medirad14_archive:/opt/wildfly/standalone
+      - /medirad14_archive:/storage
     restart: on-failure
     networks:
       - pacs_network
@@ -130,6 +130,9 @@ services:
       - kheops-dicomweb-proxy
       - arc
       - pacs-authorization-proxy
+    ports:
+      - "80:80"
+      - "443:443"
     extra_hosts:
       - "${ROOT_URL}:127.0.0.1"
       - "kibana.kheops.online:10.5.5.31"

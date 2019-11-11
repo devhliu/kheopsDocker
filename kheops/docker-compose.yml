@@ -2,18 +2,61 @@ version: '3.1'
 #https://github.com/docker-library/postgres/issues/151
 services:
 
+
   ldap:
-    container_name: pacsldap
-    image: dcm4che/slapd-dcm4chee:${PACS_LDAP_IMAGE_TAG}
+    image: dcm4che/slapd-dcm4chee:2.4.44-19.0
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
     env_file: docker-compose.env
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${TIME_ZONE}:/etc/timezone:ro
       - dcm4chee-ldap-ldap:/var/lib/ldap
       - dcm4chee-ldap-slapdd:/etc/ldap/slapd.d
-    restart: on-failure
+    restart: always
     networks:
       - pacs_network
+
+    
+  arcdb:
+    container_name: arcdb
+    image: dcm4che/postgres-dcm4chee:12.0-19
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    env_file: docker-compose.env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - dcm4chee-db-data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - pacs_network
+    
+  arc:
+    container_name: pacsarc
+    image: dcm4che/dcm4chee-arc-psql:5.19.0
+    #image: mydcm4chee
+    env_file: docker-compose.env
+    environment:
+      WILDFLY_CHOWN: /opt/wildfly/standalone /storage
+      WILDFLY_WAIT_FOR: ldap:389 arcdb:5432
+      POSTGRES_HOST: arcdb
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    depends_on:
+      - ldap
+      - arcdb
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - dcm4chee-arc-wildfly:/opt/wildfly/standalone
+      - dcm4chee-arc-data:/storage
+    networks:
+      - pacs_network
+
 
   db:
     container_name: db
@@ -23,41 +66,9 @@ services:
     env_file: docker-compose.env
     secrets:
       - kheops_authdb_pass
-      - kheops_pacsdb_pass
     restart: on-failure
     networks:
-      - pacs_network
       - kheops_network
-
-  arc:
-    container_name: pacsarc
-    image: osirixfoundation/kheops-dcm4chee-arc-psql:${KHEOPS_ARC_IMAGE_TAG}
-    ports:
-      - "8080:8080"
-      - "8443:8443"
-      - "9990:9990"
-      - "8787:8787"
-      - "11112:11112"
-      - "2575:2575"
-    env_file: docker-compose.env
-    environment:
-      WILDFLY_CHOWN: /storage /opt/wildfly/standalone
-      WILDFLY_WAIT_FOR: ldap:389 db:5432
-      JAVA_OPTS: -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n
-    secrets:
-      - kheops_pacsdb_pass
-    depends_on:
-      - ldap
-      - db
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${TIME_ZONE}:/etc/timezone:ro
-      - dcm4chee-arc-wildfly:/opt/wildfly/standalone
-      - /dcm4chee-arc/storage:/storage
-    restart: on-failure
-    networks:
-      - pacs_network
-
 
   kheops-authorization:
     container_name: kheopsauthorization
@@ -69,6 +80,9 @@ services:
     env_file: docker-compose.env
     environment:
       - CATALINA_OPTS="-Duser.timezone=UTC"
+      - JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8089"
+    ports:
+      - "8089:8089"
     depends_on:
       - db
       - arc
@@ -134,8 +148,10 @@ services:
     env_file: docker-compose.env
     environment:
       - CATALINA_OPTS="-Duser.timezone=Europe/Zurich"
+#      - JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8089"
     ports:
       - "8049:8080"
+#      - "8089:8089"
     depends_on:
       - kheops-authorization
       - arc
@@ -198,8 +214,6 @@ services:
 secrets:
   kheops_authdb_pass:
     file: ${SECRETS_PATH}/kheops_authdb_pass
-  kheops_pacsdb_pass:
-    file: ${SECRETS_PATH}/kheops_pacsdb_pass
   kheops_superuser_hmasecret:
     file: ${SECRETS_PATH}/kheops_superuser_hmasecret
   kheops_auth_hmasecret:
@@ -234,6 +248,7 @@ volumes:
   dcm4chee-ldap-slapdd:
   dcm4chee-db-data:
   dcm4chee-arc-wildfly:
+  dcm4chee-arc-data:
   kheops-db-data:
 
 networks:

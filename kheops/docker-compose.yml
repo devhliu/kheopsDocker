@@ -29,8 +29,8 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${TIME_ZONE}:/etc/timezone:ro
-      - dcm4chee-arc-wildfly:/opt/wildfly/standalone
-      - /dcm4chee-arc/storage:/storage
+      - /d4docker_archive:/opt/wildfly/standalone
+      - /d4docker_archive:/storage
     restart: on-failure
     networks:
       - pacs_network
@@ -184,7 +184,6 @@ volumes:
   dcm4chee-ldap-ldap:
   dcm4chee-ldap-slapdd:
   dcm4chee-db-data:
-  dcm4chee-arc-wildfly:
   kheops-db-data:
 
 networks:

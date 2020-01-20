@@ -1,26 +1,17 @@
-version: "3.1"
-
+version: '3.1'
 services:
-
-  ohif-viewer:
-    image: osirixfoundation/viewer:tls
-    container_name: ohif-viewer
-    env_file: docker-compose.env
+  ohif:
+    container_name: ohif
+    image: osirixfoundation/viewer:latest
+    restart: on-failure
     ports:
+      - "80:80"
       - "443:443"
     secrets:
       - privkey1.pem
       - fullchain1.pem
-      - elastic_cloud_id
-      - elastic_cloud_auth
-
-
 secrets:
   privkey1.pem:
     file: secrets/privkey1.pem
   fullchain1.pem:
     file: secrets/fullchain1.pem
-  elastic_cloud_id:
-    file: secrets/elastic_cloud_id
-  elastic_cloud_auth:
-    file: secrets/elastic_cloud_auth

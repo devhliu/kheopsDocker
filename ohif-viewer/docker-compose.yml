@@ -4,6 +4,8 @@ services:
     container_name: ohif
     image: osirixfoundation/viewer:latest
     restart: on-failure
+    environment:
+      - SERVER_NAME=ohif.kheops.online
     ports:
       - "80:80"
       - "443:443"

@@ -197,6 +197,13 @@ services:
     networks:
       - kheops_network
 
+  ohif:
+    container_name: ohif
+    image: osirixfoundation/viewer:reportprovider
+    restart: on-failure
+    environment:
+      - SERVER_NAME=demo.kheops.online
+
 secrets:
   kheops_authdb_pass:
     file: ${SECRETS_PATH}/kheops_authdb_pass

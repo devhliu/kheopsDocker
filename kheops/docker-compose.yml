@@ -203,6 +203,8 @@ services:
     restart: on-failure
     environment:
       - SERVER_NAME=demo.kheops.online
+    networks:
+      - kheops_network
 
 secrets:
   kheops_authdb_pass:

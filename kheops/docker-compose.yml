@@ -162,6 +162,7 @@ services:
       - arc
       - pacs-authorization-proxy
       - welcomebot
+      - ohif
     extra_hosts:
       - "${ROOT_URL}:127.0.0.1"
       - "kibana.kheops.online:10.5.5.31"

@@ -1,0 +1,70 @@
+---
+    # Ansible managed
+    version: "3.1"
+    services:
+      postgres:
+        image: osirixfoundation/kheops-keycloak-psql:6.0.0
+        container_name: keycloak-psql
+        env_file: docker-compose.env
+        volumes:
+          - postgres_data:/var/lib/postgresql/data
+        secrets:
+          - psql_password
+          - 0_backup.sql
+    
+      nginx:
+        image: osirixfoundation/kheops-keycloak-nginx:6.0.0
+        container_name: keycloak-nginx
+        ports:
+          - "80:80"
+          - "443:443"
+        depends_on:
+          - postgres
+          - keycloak
+        secrets:
+          - privkey1.pem
+          - fullchain1.pem
+          - lavim_privkey1.pem
+          - lavim_fullchain1.pem
+    
+      keycloak:
+        image: osirixfoundation/kheops-keycloak:6.0.0
+        container_name: keycloak
+        env_file: docker-compose.env
+        depends_on:
+          - postgres
+        volumes:
+          - keycloak-standalone:/opt/keycloak/standalone
+        logging:
+          driver: json-file
+          options:
+            max-size: "10m"
+        extra_hosts:
+          - "smtp.unige.ch:10.194.9.231"
+          - "smtp.unige.ch:10.194.9.232"
+        secrets:
+          - psql_password
+          - keycloak_password
+          - privkey1.pem
+          - fullchain1.pem
+    
+    secrets:
+      0_backup.sql:
+        file: secrets/0_backup.sql
+      psql_password:
+        file: secrets/psql_password
+      keycloak_password:
+        file: secrets/keycloak_password
+      privkey1.pem:
+        file: secrets/privkey1.pem
+      fullchain1.pem:
+        file: secrets/fullchain1.pem
+      lavim_privkey1.pem:
+        file: secrets/lavim_privkey1.pem
+      lavim_fullchain1.pem:
+        file: secrets/lavim_fullchain1.pem
+    
+    volumes:
+      keycloak-standalone:
+      postgres_data:
+    

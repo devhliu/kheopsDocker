@@ -1,8 +1,29 @@
 version: '3.1'
 #https://github.com/docker-library/postgres/issues/151
 services:
+  pacs-postgres:
+    container_name: pacspostgres
+    image: dcm4che/postgres-dcm4chee:${PACS_PSQL_IMAGE_TAG}
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    environment:
+      POSTGRES_DB: kheops_pacs
+      POSTGRES_USER: kheops_pacs
+      POSTGRES_PASSWORD_FILE: /run/secrets/kheops_pacsdb_pass
+    env_file: docker-compose.env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - dcm4chee-db-data:/var/lib/postgresql/data
+    secrets:
+      - kheops_pacsdb_pass
+    restart: always
+    networks:
+      - pacs_network
+
   ldap:
-    container_name: pacsldap
+    container_name: ldap
     image: dcm4che/slapd-dcm4chee:${PACS_LDAP_IMAGE_TAG}
     env_file: docker-compose.env
     volumes:
@@ -29,12 +50,24 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${TIME_ZONE}:/etc/timezone:ro
-      - /d4docker_archive:/opt/wildfly/standalone
-      - /d4docker_archive:/storage
+      - standalone:/opt/wildfly/standalone
+      - storage:/storage
     restart: on-failure
     networks:
       - pacs_network
 
+  kheops-postgres:
+    container_name: kheopspostgres
+    image: osirixfoundation/kheops-database:${KHEOPS_DATABASE_IMAGE_TAG}
+    volumes:
+      - kheops-db-data:/var/lib/postgresql/data
+    env_file: docker-compose.env
+    secrets:
+      - kheops_authdb_pass
+      - kheops_pacsdb_pass
+    restart: on-failure
+    networks:
+      - kheops_network
 
   kheops-authorization:
     container_name: kheopsauthorization
@@ -48,6 +81,7 @@ services:
       - CATALINA_OPTS="-Duser.timezone=UTC"
     depends_on:
       - arc
+      - kheops-postgres
     secrets:
       - kheops_auth_hmasecret
       - kheops_authdb_pass
@@ -91,7 +125,6 @@ services:
       - arc
     networks:
       - frontend_network
-
 
   kheops-dicomweb-proxy:
     container_name: kheopsdicomwebproxy
@@ -185,6 +218,8 @@ volumes:
   dcm4chee-ldap-slapdd:
   dcm4chee-db-data:
   kheops-db-data:
+  standalone:
+  storage:
 
 networks:
   kheops_network:

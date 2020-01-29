@@ -17,16 +17,6 @@ fi
 secretpath="kheops/secrets/"
 kheopspath="kheops/"
 
-echo "What is the Keycloak realm ?"
-read KEYCLOAK_REALM
-
-echo "What is your host ?"
-read HOST
-
-sed -i "s|\%{kheops_realm}|$KEYCLOAK_REALM|g" ${kheopspath}/docker-compose.env
-sed -i "s|\%{kheops_host}|$HOST|g" ${kheopspath}/docker-compose.env
-sed -i "s|\%{kheops_host}|$HOST|g" ${kheopspath}/.env
-
 echo "Download project docker"
 if [[ ! -d "$kheopspath" ]]
 then
@@ -63,9 +53,19 @@ done
 docker rm $(docker ps -a -q)
 docker rmi frapsoft/openssl
 
-(cd $kheopspath && docker-compose down -v && docker-compose pull)
+echo "What is the Keycloak realm ?"
+read KEYCLOAK_REALM
+
+echo "What is your host ?"
+read HOST
+
+sed -i "s|\%{kheops_realm}|$KEYCLOAK_REALM|g" ${kheopspath}/docker-compose.env
+sed -i "s|\%{kheops_host}|$HOST|g" ${kheopspath}/docker-compose.env
+sed -i "s|\%{kheops_host}|$HOST|g" ${kheopspath}/.env
 
 echo "Add your public and private key in the directory kheops/secrets (fullchain1.pem / privkey1.pem)"
 read -p "Press enter to start KHEOPS"
+
+(cd $kheopspath && docker-compose down -v && docker-compose pull)
 
 (cd $kheopspath && docker-compose up)

@@ -1,41 +1,5 @@
----
-# Ansible managed
 version: "3.1"
 services:
-  keycloakpostgres:
-    image: postgres:9.6
-    container_name: keycloakpostgres
-    environment:
-      POSTGRES_DB: kheops_keycloak
-      POSTGRES_USER: kheops_keycloak
-      POSTGRES_PASSWORD_FILE: /run/secrets/keycloak_psql_password
-    volumes:
-      - keycloak-postgres-data:/var/lib/postgresql/data
-    secrets:
-      - keycloak_psql_password
-    networks:
-      - keycloak_network
-
-  keycloak:
-    image: osirixfoundation/kheops-keycloak:${KEYCLOAK_IMAGE_TAG}
-    container_name: keycloak
-    ports:
-      - "8080:8080"
-    env_file:
-      - docker-compose.env
-    depends_on:
-      - keycloakpostgres
-    volumes:
-      - keycloak-standalone:/opt/keycloak/standalone
-    secrets:
-      - keycloak_psql_password
-      - keycloak_admin_password
-      - kheops_keycloak_clientsecret
-    networks:
-      - kheops_network
-      - frontend_network
-      - keycloak_network
-
   ldap:
     container_name: ldap
     image: dcm4che/slapd-dcm4chee:${PACS_LDAP_IMAGE_TAG}
@@ -69,7 +33,7 @@ services:
 
   pacs-arc:
     container_name: pacsarc
-    image: dcm4che/dcm4chee-arc-psql:${KHEOPS_ARC_IMAGE_TAG}
+    image: dcm4che/dcm4chee-arc-psql:${PACS_ARC_IMAGE_TAG}
     env_file: docker-compose.env
     environment:
       POSTGRES_DB: kheops_pacs
@@ -110,11 +74,9 @@ services:
     env_file: docker-compose.env
     environment:
       CATALINA_OPTS: -Duser.timezone=UTC
-      KHEOPS_KEYCLOAK_URI: http://keycloak:8080
     depends_on:
       - kheops-postgres
       - pacs-arc
-      - keycloak
     secrets:
       - kheops_superuser_hmasecret
       - kheops_auth_hmasecret
@@ -141,8 +103,6 @@ services:
   kheops-ui:
     container_name: kheopsui
     image: osirixfoundation/kheops-ui:${KHEOPS_UI_IMAGE_TAG}
-    environment:
-      KHEOPS_KEYCLOAK_URI: http://localhost:8080
     env_file: docker-compose.env
     restart: on-failure
     depends_on:
@@ -164,22 +124,6 @@ services:
     networks:
       - kheops_network
 
-  kheops-reverse-proxy:
-    image: osirixfoundation/kheops-reverse-proxy:${KHEOPS_REVERSE_PROXY_IMAGE_TAG}
-    container_name: kheopsreverseproxy
-    env_file: docker-compose.env
-    ports:
-      - "80:8042"
-      - "443:443"
-    depends_on:
-      - kheops-authorization
-      - kheops-dicomweb-proxy
-      - pacs-arc
-      - pacs-authorization-proxy
-    networks:
-      - kheops_network
-      - frontend_network
-
   pacs-authorization-proxy:
     container_name: pacsauthorizationproxy
     env_file: docker-compose.env
@@ -193,11 +137,26 @@ services:
       - pacs_network
       - kheops_network
 
+  kheops-reverse-proxy:
+    image: osirixfoundation/kheops-reverse-proxy:${KHEOPS_REVERSE_PROXY_IMAGE_TAG}
+    container_name: kheopsreverseproxy
+    env_file: docker-compose.env
+    ports:
+      - "80:8042"
+      - "443:443"
+    depends_on:
+      - kheops-authorization
+      - kheops-dicomweb-proxy
+      - pacs-arc
+      - pacs-authorization-proxy
+    secrets:
+      - privkey1.pem
+      - fullchain1.pem
+    networks:
+      - kheops_network
+      - frontend_network
+
 secrets:
-  keycloak_psql_password:
-    file: secrets/keycloak_psql_password
-  keycloak_admin_password:
-    file: secrets/keycloak_admin_password
   kheops_authdb_pass:
     file: ${SECRETS_PATH}/kheops_authdb_pass
   kheops_pacsdb_pass:
@@ -223,8 +182,6 @@ secrets:
 
 
 volumes:
-  keycloak-standalone:
-  keycloak-postgres-data:
   dcm4chee-ldap-ldap:
   dcm4chee-ldap-slapdd:
   dcm4chee-db-data:
@@ -238,6 +195,4 @@ networks:
   pacs_network:
     driver: bridge
   frontend_network:
-    driver: bridge
-  keycloak_network:
     driver: bridge

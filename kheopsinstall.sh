@@ -56,7 +56,7 @@ docker rmi frapsoft/openssl
 echo "What is the Keycloak realm ?"
 read KEYCLOAK_REALM
 
-echo "What is your host ?"
+echo "What is your hostname ? (ex: demo.kheops.online)"
 read HOST
 
 sed -i "s|\%{kheops_realm}|$KEYCLOAK_REALM|g" ${kheopspath}/docker-compose.env

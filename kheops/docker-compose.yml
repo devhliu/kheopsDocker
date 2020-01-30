@@ -152,6 +152,8 @@ services:
     secrets:
       - privkey1.pem
       - fullchain1.pem
+    extra_hosts:
+      - "${ROOT_URL}:127.0.0.1"  
     networks:
       - kheops_network
       - frontend_network

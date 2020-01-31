@@ -3,17 +3,16 @@
     version: "3.1"
     services:
       postgres:
-        image: osirixfoundation/kheops-keycloak-psql:6.0.0
+        image: osirixfoundation/kheops-keycloak-psql:${KHEOPS_KEYCLOAK_PSQL}
         container_name: keycloak-psql
         env_file: docker-compose.env
         volumes:
           - postgres_data:/var/lib/postgresql/data
         secrets:
           - psql_password
-          - 0_backup.sql
     
       nginx:
-        image: osirixfoundation/kheops-keycloak-nginx:6.0.0
+        image: osirixfoundation/kheops-keycloak-nginx:${KHEOPS_KEYCLOAK_NGINX}
         container_name: keycloak-nginx
         ports:
           - "80:80"
@@ -28,7 +27,7 @@
           - lavim_fullchain1.pem
     
       keycloak:
-        image: osirixfoundation/kheops-keycloak:6.0.0
+        image: osirixfoundation/kheops-keycloak:${KHEOPS_KEYCLOAK}
         container_name: keycloak
         env_file: docker-compose.env
         depends_on:
@@ -49,8 +48,6 @@
           - fullchain1.pem
     
     secrets:
-      0_backup.sql:
-        file: secrets/0_backup.sql
       psql_password:
         file: secrets/psql_password
       keycloak_password:

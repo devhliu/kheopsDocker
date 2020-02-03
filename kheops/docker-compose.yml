@@ -45,8 +45,8 @@ services:
     networks:
       - pacs_network
 
-  auth-db:
-    container_name: authdb
+  kheops-authorization-database:
+    container_name: kheopsauthorizationdatabase
     image: postgres:${KHEOPS_AUTHORIZATION_PSQL_DATABASE_IMAGE_TAG}
     volumes:
       - kheops-db-data:/var/lib/postgresql/data
@@ -71,7 +71,7 @@ services:
     ports:
       - "8089:8089"
     depends_on:
-      - auth-db
+      - kheops-authorization-database
       - arc
     secrets:
       - kheops_superuser_hmasecret

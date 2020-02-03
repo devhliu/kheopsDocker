@@ -57,6 +57,8 @@ services:
     secrets:
       - kheops_authdb_pass
     restart: on-failure
+    networks:
+      - kheops_network
 
   kheops-authorization:
     container_name: kheopsauthorization

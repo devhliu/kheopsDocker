@@ -39,15 +39,12 @@ secretfiles=("kheops_auth_hmasecret" "kheops_auth_hmasecret_post" \
 
 echo "Enter the Keycloak client secret:"
 read KEYCLOAK_CLIENT_SECRET
-echo $KEYCLOAK_CLIENT_SECRET > ${secretpath}kheops_keycloak_clientsecret
+printf "%s\n" $(printf "%s" $KEYCLOAK_CLIENT_SECRET | tr -dc '[:print:]') > ${secretpath}kheops_keycloak_clientsecret
 
 docker pull frapsoft/openssl
 for secretfile in ${secretfiles[*]}
 do
-  secret=$(docker run -it frapsoft/openssl rand -base64 32)
-  echo $secret > ${secretpath}tmp_${secretfile}
-  sed -e "s/\r//g" ${secretpath}tmp_${secretfile} > $secretpath$secretfile
-  rm ${secretpath}tmp_${secretfile}
+  printf "%s\n" $(docker run -it frapsoft/openssl rand -base64 32 | tr -dc '[:print:]') > $secretpath$secretfile
 done
 
 docker rm $(docker ps -a -q)

@@ -21,8 +21,20 @@ echo "Download project docker"
 if [[ ! -d "$kheopspath" ]]
 then
   mkdir $kheopspath
+fi
+
+if [[ ! -f "${kheopspath}.env" ]]
+then
   (cd $kheopspath && curl https://raw.githubusercontent.com/OsiriX-Foundation/kheopsDocker/install-secure/kheops/.env --output .env --silent)
+fi
+
+if [[ ! -f "${kheopspath}docker-compose.env" ]]
+then
   (cd $kheopspath && curl https://raw.githubusercontent.com/OsiriX-Foundation/kheopsDocker/install-secure/kheops/docker-compose.env --output docker-compose.env --silent)
+fi
+
+if [[ ! -f "${kheopspath}docker-compose.yml" ]]
+then
   (cd $kheopspath && curl https://raw.githubusercontent.com/OsiriX-Foundation/kheopsDocker/install-secure/kheops/docker-compose.yml --output docker-compose.yml --silent)
 fi
 
@@ -50,12 +62,16 @@ done
 docker rm $(docker ps -a -q)
 docker rmi frapsoft/openssl
 
+echo "What is the Keycloak host ? (ex: https://keycloak.kheops.online)"
+read KEYCLOAK_HOSTNAME
+
 echo "What is the Keycloak realm ?"
 read KEYCLOAK_REALM
 
 echo "What is your hostname ? (ex: demo.kheops.online)"
 read HOST
 
+sed -i "s|\%{keycloak_hostname}|$KEYCLOAK_HOSTNAME|g" ${kheopspath}/docker-compose.env
 sed -i "s|\%{kheops_realm}|$KEYCLOAK_REALM|g" ${kheopspath}/docker-compose.env
 sed -i "s|\%{kheops_host}|$HOST|g" ${kheopspath}/docker-compose.env
 sed -i "s|\%{kheops_host}|$HOST|g" ${kheopspath}/.env

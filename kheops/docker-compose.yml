@@ -40,7 +40,7 @@ services:
       - arcdb
     volumes:
       - dcm4chee-arc-wildfly:/opt/wildfly/standalone
-      - /dcm4chee-arc/storage:/storage
+      - dcm4chee-arc-storage:/storage
     restart: on-failure
     networks:
       - pacs_network
@@ -201,6 +201,7 @@ volumes:
   dcm4chee-ldap-slapdd:
   dcm4chee-db-data:
   dcm4chee-arc-wildfly:
+  dcm4chee-arc-storage:
   kheops-db-data:
   logs_auth:
   logs_proxy:

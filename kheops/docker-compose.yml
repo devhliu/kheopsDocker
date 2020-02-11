@@ -47,13 +47,17 @@ services:
 
   kheops-authorization-database:
     container_name: kheopsauthorizationdatabase
-    image: postgres:${KHEOPS_AUTHORIZATION_PSQL_DATABASE_IMAGE_TAG}
+#    image: postgres:${KHEOPS_AUTHORIZATION_PSQL_DATABASE_IMAGE_TAG}
+    image: osirixfoundation/kheops-database:master
     volumes:
       - kheops-db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=kheops
-      - POSTGRES_USER=kheopsuser
-      - POSTGRES_PASSWORD_FILE=/run/secrets/kheops_authdb_pass
+    #  - POSTGRES_DB=kheops
+    #  - POSTGRES_USER=kheopsuser
+    #  - POSTGRES_PASSWORD_FILE=/run/secrets/kheops_authdb_pass
+      - KHEOPS_AUTHDB_NAME=kheops
+      - KHEOPS_AUTHDB_USER=kheopsuser
+      - KHEOPS_AUTHDB_PASSWORD_FILE=/run/secrets/kheops_authdb_pass
     secrets:
       - kheops_authdb_pass
     restart: on-failure
@@ -117,7 +121,7 @@ services:
     image: osirixfoundation/kheops-dicomweb-proxy:${KHEOPS_DICOMWEB_PROXY_IMAGE_TAG}
     restart: on-failure
     environment:
-      - JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8088"
+      - JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8088"
     ports:
       - "8088:8088"
     env_file: docker-compose.env

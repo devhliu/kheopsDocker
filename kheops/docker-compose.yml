@@ -47,14 +47,10 @@ services:
 
   kheops-authorization-database:
     container_name: kheopsauthorizationdatabase
-#    image: postgres:${KHEOPS_AUTHORIZATION_PSQL_DATABASE_IMAGE_TAG}
-    image: osirixfoundation/kheops-database:master
+    image: osirixfoundation/kheops-database:${KHEOPS_AUTHORIZATION_DATABASE_IMAGE_TAG}
     volumes:
       - kheops-db-data:/var/lib/postgresql/data
     environment:
-    #  - POSTGRES_DB=kheops
-    #  - POSTGRES_USER=kheopsuser
-    #  - POSTGRES_PASSWORD_FILE=/run/secrets/kheops_authdb_pass
       - KHEOPS_AUTHDB_NAME=kheops
       - KHEOPS_AUTHDB_USER=kheopsuser
       - KHEOPS_AUTHDB_PASSWORD_FILE=/run/secrets/kheops_authdb_pass

@@ -87,7 +87,6 @@ services:
       - kheops_keycloak_clientsecret
       - kheops_client_dicomwebproxysecret
       - kheops_client_zippersecret
-      - kheops_metric_ressource_password
     extra_hosts:
       - "keycloak.kheops.online:10.5.5.29"
       - "reportprovider.kheops.online:10.5.5.33"
@@ -120,9 +119,6 @@ services:
     depends_on:
       - kheops-authorization
       - arc
-    secrets:
-      - elastic_cloud_id
-      - elastic_cloud_auth
     networks:
       - frontend_network
 
@@ -230,10 +226,6 @@ secrets:
     file: ${SECRETS_PATH}/kheops_client_zippersecret
   welcomebot_token:
     file: ${SECRETS_PATH}/welcomebot_token
-  elastic_cloud_id:
-    file: ${SECRETS_PATH}/elastic_cloud_id
-  elastic_cloud_auth:
-    file: ${SECRETS_PATH}/elastic_cloud_auth
   elastic_pwd:
     file: ${SECRETS_PATH}/elastic_pwd
   kheops_metric_ressource_password:

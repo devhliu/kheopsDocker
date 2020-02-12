@@ -7,8 +7,6 @@ services:
     image: dcm4che/slapd-dcm4chee:${PACS_LDAP_IMAGE_TAG}
     env_file: docker-compose.env
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${TIME_ZONE}:/etc/timezone:ro
       - dcm4chee-ldap-ldap:/var/lib/ldap
       - dcm4chee-ldap-slapdd:/etc/ldap/slapd.d
     restart: on-failure
@@ -37,7 +35,6 @@ services:
         max-size: "10m"
     env_file: docker-compose.env
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - dcm4chee-db-data:/var/lib/postgresql/data
     secrets:
       - kheops_pacsdb_pass
@@ -59,8 +56,6 @@ services:
       - ldap
       - arcdb
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${TIME_ZONE}:/etc/timezone:ro
       - dcm4chee-arc-wildfly:/opt/wildfly/standalone
       - /dcm4chee-arc/storage:/storage
     restart: on-failure
@@ -70,9 +65,6 @@ services:
   kheops-authorization:
     container_name: kheopsauthorization
     image: osirixfoundation/kheops-authorization:${KHEOPS_AUTHORIZATION_IMAGE_TAG}
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${TIME_ZONE}:/etc/timezone:ro
     restart: on-failure
     env_file: docker-compose.env
     environment:
@@ -81,7 +73,6 @@ services:
       - db
       - arc
     secrets:
-      - kheops_superuser_hmasecret
       - kheops_auth_hmasecret
       - kheops_authdb_pass
       - kheops_keycloak_clientsecret
@@ -96,9 +87,6 @@ services:
   kheops-zipper:
     container_name: kheopszipper
     image: osirixfoundation/kheops-zipper:${KHEOPS_ZIPPER_IMAGE_TAG}
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${TIME_ZONE}:/etc/timezone:ro
     restart: on-failure
     env_file: docker-compose.env
     depends_on:
@@ -111,23 +99,14 @@ services:
   kheops-ui:
     container_name: kheopsui
     image: osirixfoundation/kheops-ui:${KHEOPS_UI_IMAGE_TAG}
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${TIME_ZONE}:/etc/timezone:ro
     env_file: docker-compose.env
     restart: on-failure
-    depends_on:
-      - kheops-authorization
-      - arc
     networks:
       - frontend_network
 
   kheops-dicomweb-proxy:
     container_name: kheopsdicomwebproxy
     image: osirixfoundation/kheops-dicomweb-proxy:${KHEOPS_DICOMWEB_PROXY_IMAGE_TAG}
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${TIME_ZONE}:/etc/timezone:ro
     restart: on-failure
     env_file: docker-compose.env
     depends_on:
@@ -140,15 +119,12 @@ services:
       - kheops_network
 
   kheops-reverse-proxy:
-    image: osirixfoundation/kheops-reverse-proxy:${KHEOPS_REVERSE_PROXY_IMAGE_TAG}
     container_name: kheopsreverseproxy
+    image: osirixfoundation/kheops-reverse-proxy:${KHEOPS_REVERSE_PROXY_IMAGE_TAG}
     secrets:
       - privkey1.pem
       - fullchain1.pem
     env_file: docker-compose.env
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${TIME_ZONE}:/etc/timezone:ro
     ports:
       - "80:80"
       - "443:443"
@@ -161,7 +137,6 @@ services:
       - ohif
     extra_hosts:
       - "${ROOT_URL}:127.0.0.1"
-      - "kibana.kheops.online:10.5.5.31"
     networks:
       - kheops_network
       - frontend_network
@@ -170,16 +145,11 @@ services:
     container_name: pacsauthorizationproxy
     env_file: docker-compose.env
     image: osirixfoundation/pacs-authorization-proxy:${PACS_AUTHORIZATION_PROXY_IMAGE_TAG}
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${TIME_ZONE}:/etc/timezone:ro
     depends_on:
       - arc
     secrets:
       - kheops_auth_hmasecret
       - kheops_auth_hmasecret_post
-    extra_hosts:
-      - "kibana.kheops.online:10.5.5.31"
     networks:
       - pacs_network
       - kheops_network
@@ -201,15 +171,13 @@ services:
     environment:
       - SERVER_NAME=demo.kheops.online
     networks:
-      - kheops_network
+      - frontend_network
 
 secrets:
   kheops_authdb_pass:
     file: ${SECRETS_PATH}/kheops_authdb_pass
   kheops_pacsdb_pass:
     file: ${SECRETS_PATH}/kheops_pacsdb_pass
-  kheops_superuser_hmasecret:
-    file: ${SECRETS_PATH}/kheops_superuser_hmasecret
   kheops_auth_hmasecret:
     file: ${SECRETS_PATH}/kheops_auth_hmasecret
   kheops_auth_hmasecret_post:
@@ -230,6 +198,7 @@ secrets:
     file: ${SECRETS_PATH}/elastic_pwd
   kheops_metric_ressource_password:
     file: ${SECRETS_PATH}/kheops_metric_ressource_password
+
 volumes:
   dcm4chee-ldap-ldap:
   dcm4chee-ldap-slapdd:

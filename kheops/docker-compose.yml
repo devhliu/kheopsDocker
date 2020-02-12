@@ -16,9 +16,14 @@ services:
   db:
     container_name: db
     image: osirixfoundation/kheops-database:${KHEOPS_DATABASE_IMAGE_TAG}
+#    image: osirixfoundation/kheops-database:v0.9.1
     volumes:
       - kheops-db-data:/var/lib/postgresql/data
     env_file: docker-compose.env
+#    environment:
+#      - KHEOPS_AUTHDB_USER=kheopsuser
+#      - KHEOPS_AUTHDB_NAME=kheops
+#      - KHEOPS_AUTHDB_PASSWORD_FILE=/run/secrets/kheops_authdb_pass
     secrets:
       - kheops_authdb_pass
       - kheops_pacsdb_pass
@@ -194,10 +199,6 @@ secrets:
     file: ${SECRETS_PATH}/kheops_client_zippersecret
   welcomebot_token:
     file: ${SECRETS_PATH}/welcomebot_token
-  elastic_pwd:
-    file: ${SECRETS_PATH}/elastic_pwd
-  kheops_metric_ressource_password:
-    file: ${SECRETS_PATH}/kheops_metric_ressource_password
 
 volumes:
   dcm4chee-ldap-ldap:

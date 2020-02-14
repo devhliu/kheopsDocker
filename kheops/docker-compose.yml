@@ -38,7 +38,7 @@ services:
 
   kheops-authorization:
     container_name: kheopsauthorization
-    image: osirixfoundation/kheops-authorization:${KHEOPS_VERSION}
+    image: osirixfoundation/kheops-authorization:${KHEOPS_AUTHORIZATION}
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${TIME_ZONE}:/etc/timezone:ro
@@ -116,7 +116,7 @@ services:
 
 
   kheops-reverse-proxy:
-    image: osirixfoundation/kheops-reverse-proxy:staging-medirad
+    image: osirixfoundation/kheops-reverse-proxy:${KHEOPS_REVERSE_PROXY}
     container_name: kheopsreverseproxy
     secrets:
       - privkey1.pem
@@ -156,6 +156,14 @@ services:
       - kheops_network
       - pacs_network
 
+  irdbb-import:
+    container_name: irdbbimport
+    image: osirixfoundation/irdbb-import:medirad
+    restart: on-failure
+    networks:
+      - kheops_network
+      - irdbb_importer_network
+
 secrets:
   kheops_authdb_pass:
     file: ${SECRETS_PATH}/kheops_authdb_pass
@@ -194,3 +202,6 @@ networks:
     driver: bridge
   reverseproxy_network:
     driver: bridge
+  irdbb_importer_network:
+    driver: bridge
+

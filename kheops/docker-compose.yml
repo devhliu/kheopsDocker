@@ -130,12 +130,6 @@ services:
       - ${TIME_ZONE}:/etc/timezone:ro
     env_file: docker-compose.env
     restart: on-failure
-    depends_on:
-      - kheops-authorization
-      - arc
-    secrets:
-      - elastic_cloud_id
-      - elastic_cloud_auth
     networks:
       - frontend_network
 
